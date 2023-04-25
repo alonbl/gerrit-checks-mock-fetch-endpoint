@@ -3,10 +3,10 @@
 set -e
 
 case "$1" in
-	purge)
-		deluser --quiet --system gerrit-checks-mock-fe > /dev/null || true
-		delgroup --quiet --system gerrit-checks-mock-fe > /dev/null || true
-		;;
+    purge)
+        deluser --quiet --system gerrit-checks-mock-fe > /dev/null || true
+        delgroup --quiet --system gerrit-checks-mock-fe > /dev/null || true
+        ;;
 esac
 
 #DEBHELPER#

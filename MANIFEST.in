@@ -1,3 +1,5 @@
+exclude setup.cfg
+include .flake8
 include .gitignore
 include .pre-commit-config.yaml
 include PACKAGING.md
@@ -13,4 +15,6 @@ include packaging/debian/gerrit-checks-mock-fetch-endpoint.postrm
 include packaging/debian/gerrit-checks-mock-fetch-endpoint.service
 include packaging/debian/rules
 include tox.ini
+recursive-exclude debian *
+recursive-exclude packaging/debian/gerrit-checks-mock-fetch-endpoint *
 recursive-include .github *.yml

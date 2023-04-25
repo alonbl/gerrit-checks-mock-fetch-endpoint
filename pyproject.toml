@@ -5,6 +5,32 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "gerrit-checks-mock-fetch-endpoint"
+readme = "README.md"
+version = "0.0.0-b"
+requires-python = ">=3.9"
+
+[project.license]
+text = "BSD"
+
+[project.optional-dependencies]
+dev = [
+    "mypy",
+    "pre-commit",
+    "pylint",
+]
+
+[[project.authors]]
+name = "Alon Bar-Lev"
+email = "alon.barlev@gmail.com"
+
+[tool.setuptools.packages.find]
+exclude = [
+    "build*",
+    "tests*",
+]
+
 [tool.black]
 line-length = 120
 
@@ -14,7 +40,10 @@ disallow_incomplete_defs = true
 disallow_untyped_calls = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = true
+explicit_package_bases = true
+namespace_packages = true
 no_implicit_optional = true
+show_error_codes = true
 strict = true
 strict_equality = true
 warn_redundant_casts = true
@@ -23,24 +52,21 @@ warn_unreachable = true
 
 [tool.pylint.MASTER]
 disable = [
-    "missing-module-docstring",
     "missing-class-docstring",
     "missing-function-docstring",
+    "missing-module-docstring",
 ]
 
 [tool.pylint.FORMAT]
 max-line-length = 120
 
+[tool.coverage.report]
+show_missing = true
+
 [tool.isort]
 profile = "black"
 atomic = true
 combine_as_imports = true
-
-[tool.pytest.ini_options]
-addopts = "-ra"
-testpaths = [
-    "tests",
-]
 
 [tool.check-manifest]
 ignore = [

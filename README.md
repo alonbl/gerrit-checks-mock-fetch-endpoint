@@ -84,13 +84,13 @@ automatically trigger the workflow at replication.
 
 ```ini
 [remote]
-	url = https://github.com/@SPACE@/${name}-ci.git
-	push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
-	push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
-	push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
-	projects = @PROJECT1@
-	projects = @PROJECT2@
-	replicationDelay = 2
+        url = https://github.com/@SPACE@/${name}-ci.git
+        push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
+        push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
+        push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
+        projects = @PROJECT1@
+        projects = @PROJECT2@
+        replicationDelay = 2
 ```
 
 ### BitBucket Driver
@@ -133,13 +133,13 @@ automatically trigger the workflow at replication.
 
 ```ini
 [remote]
-        url = https://bitbucket.org/@WORKSPACE@/${name}-ci.git
-        push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
-        push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
-        push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
-	projects = @PROJECT1@
-	projects = @PROJECT2@
-        replicationDelay = 2
+    url = https://bitbucket.org/@WORKSPACE@/${name}-ci.git
+    push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
+    push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
+    push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
+    projects = @PROJECT1@
+    projects = @PROJECT2@
+    replicationDelay = 2
 ```
 
 ## Systemd Configuration
