@@ -121,9 +121,12 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
                 ),
                 query=urllib.parse.urlencode(
                     {
-                        "target.branch": (
-                            f"{self._branch_prefix}{request['changeId'] % 100:02}/"
-                            + f"{request['changeId']}/{request['revision']}"
+                        "target.branch": "/".join(
+                            (
+                                self._branch_prefix,
+                                request["changeId"].replace("~", "#"),
+                                str(request["revision"]),
+                            ),
                         ),
                         "sort": "-created_on",
                         "pagelen": 100,

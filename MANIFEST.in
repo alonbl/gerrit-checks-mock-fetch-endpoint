@@ -4,6 +4,7 @@ include .gitignore
 include .pre-commit-config.yaml
 include PACKAGING.md
 include config.ini.example
+include hooks/patchset-created
 include packaging/debian/.gitignore
 include packaging/debian/changelog
 include packaging/debian/compat

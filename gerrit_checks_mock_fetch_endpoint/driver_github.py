@@ -114,7 +114,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
         super().__init__(name, config)
 
         self._base_url = config["base_url"]
-        self._branch_prefix = config.get("branch_prefix", "changes/")
+        self._branch_prefix = config.get("branch_prefix", "gerrit")
         self._project_format = config.get("repo_format", "{repo}-ci")
 
         #
@@ -138,9 +138,12 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
                 ),
                 query=urllib.parse.urlencode(
                     {
-                        "branch": (
-                            f"{self._branch_prefix}{request['changeId'] % 100:02}/"
-                            + f"{request['changeId']}/{request['revision']}"
+                        "branch": "/".join(
+                            (
+                                self._branch_prefix,
+                                request["changeId"].replace("~", "#"),
+                                str(request["revision"]),
+                            ),
                         ),
                     },
                 ),

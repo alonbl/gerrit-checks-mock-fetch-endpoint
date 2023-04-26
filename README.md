@@ -20,6 +20,46 @@ options:
   --config FILE        Configuration file, may be specified multiple times
 ```
 
+## Gerrit Hooks
+
+### Credentials
+
+#### ~/.gitconfig
+
+```ini
+[credential "@GIT_URL@"]
+    helper = "!f() { test \"$1\" = get && cat @PATH@/secret; }; f"
+```
+
+#### @PATH@/secret
+
+GitHub fine grained with:
+
+* Contents: Read and Write
+* Workflows: Read and Write
+
+Format:
+
+```ini
+username=@USER@
+password=@PASSWORD@
+```
+
+### `etc/checks-mock.conf`
+
+```ini
+GERRIT_CHECKS_MOCK_URL=@GIT_URL@
+GERRIT_CHECKS_REF_PREFIX=gerrit
+```
+
+### Hook
+
+```sh
+ln -s \
+    /usr/libexec/gerrit-checks-mock-fetch-endpoint/patchset-created \
+    @GERRIT_SITE@/hooks/patchset-created
+```
+
 ## Configuration File
 
 ```ini
@@ -50,7 +90,7 @@ configuration is required.
 ```ini
 [github]
 base_url = https://api.github.com/repos/@SPACE@
-branch_prefix = @GERRIT_ID@/changes/
+branch_prefix = @GERRIT_ID@
 repo_format = {project}-ci
 timeout = 2
 token = @APP_TOKEN@
@@ -58,43 +98,10 @@ token = @APP_TOKEN@
 
 Do not use anonymous access, GitHub blocks requests after a threshold.
 
-The GitHub password must be application password.
-* Select your user.
-* Select settings.
-* Select developer settings
-* Select Personal access tokens
-  * Generate a new token
-  * For replication select Workflow which in turn will also select repo.
-  * For query select repository read
-
-#### Gerrit Replication
-
-##### `etc/replication.config`
-
-```ini
-[gerrit]
-replicateOnStartup = true
-autoReload = true
-```
-
-##### `etc/replication/github.config`
-
-Replicate the Gerrit changesets as branches in GitHub, this way we
-automatically trigger the workflow at replication.
-
-```ini
-[remote]
-        url = https://github.com/@SPACE@/${name}-ci.git
-        push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
-        push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
-        push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
-        projects = @PROJECT1@
-        projects = @PROJECT2@
-        replicationDelay = 2
-```
+GitHub token is fine grained token:
+* Actions: Read
 
 ### BitBucket Driver
-
 
 #### Fetch Endpoint Configuration
 
@@ -115,32 +122,6 @@ The BitBucket password must be app password.
   * Select create app password
   * For replication select repository write
   * For query select pipelines read
-
-#### Gerrit Replication
-
-##### `etc/replication.config`
-
-```ini
-[gerrit]
-replicateOnStartup = true
-autoReload = true
-```
-
-##### `etc/replication/bitbucket.config`
-
-Replicate the Gerrit changesets as branches in GitHub, this way we
-automatically trigger the workflow at replication.
-
-```ini
-[remote]
-    url = https://bitbucket.org/@WORKSPACE@/${name}-ci.git
-    push = +refs/heads/*:refs/heads/@GERRIT_ID@/heads/*
-    push = +refs/tags/*:refs/tags/@GERRIT_ID@/*
-    push = +refs/changes/*:refs/heads/@GERRIT_ID@/changes/*
-    projects = @PROJECT1@
-    projects = @PROJECT2@
-    replicationDelay = 2
-```
 
 ## Systemd Configuration
 
@@ -194,5 +175,5 @@ sed -e 's/(Enum)/(str, Enum)/' checks-in.py > checks.py
 ### Debug
 
 ```
-$ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/fetch -d '{"project": "test1", "changeId": 122, "revision": 9}'
+$ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/fetch -d '{"project": "test1", "changeId": "test1~master~I324324324", "revision": 9}'
 ```

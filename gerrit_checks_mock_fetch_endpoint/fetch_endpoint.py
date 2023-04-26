@@ -6,5 +6,5 @@ class FetchEndpoint(typing.TypedDict):
     accountId: int
     emailAddresses: list[str]
     project: str
-    changeId: int
+    changeId: str
     revision: int
