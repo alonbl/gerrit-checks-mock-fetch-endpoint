@@ -48,8 +48,13 @@ password=@PASSWORD@
 ### `etc/checks-mock.conf`
 
 ```ini
-GERRIT_CHECKS_MOCK_URL=@GIT_URL@
+GERRIT_CHECKS_MOCK_URL_PREFIX=@GIT_URL@
 GERRIT_CHECKS_REF_PREFIX=gerrit
+
+project_transform() {
+    local project="$1"
+    echo "{project}-ci"
+}
 ```
 
 ### Hook
@@ -91,7 +96,8 @@ configuration is required.
 [github]
 base_url = https://api.github.com/repos/@SPACE@
 branch_prefix = @GERRIT_ID@
-repo_format = {project}-ci
+repo_pattern = ^(?P<repo>.*)$
+repo_replacement = \g<repo>-ci
 timeout = 2
 token = @APP_TOKEN@
 ```
@@ -109,7 +115,8 @@ GitHub token is fine grained token:
 [bitbucket]
 base_url = https://api.bitbucket.org/2.0/repositories/@WORKSPACE@
 branch_prefix = @GERRIT_ID@/changes/
-repo_format = {project}-ci
+repo_pattern = ^(?P<repo>.*)$
+repo_replacement = \g<repo>-ci
 timeout = 2
 user = @USER@
 password = @APP PASSWORD@

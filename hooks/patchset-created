@@ -11,13 +11,22 @@ die() {
 
 [ -n "${GERRIT_SITE}" ] || die "Please set GERRIT_SITE"
 
+project_transform() {
+    local project="$1"
+    echo "${project}"
+}
+
 . "${GERRIT_SITE}/etc/checks-mock.conf" || die "Cannot read configuration '${GERRIT_SITE}/etc/checks-mock.conf'"
 
-[ -n "${GERRIT_CHECKS_MOCK_URL}" ] || die "GERRIT_CHECKS_MOCK_URL is missing"
+[ -n "${GERRIT_CHECKS_MOCK_URL_PREFIX}" ] || die "GERRIT_CHECKS_MOCK_URL_PREFIX is missing"
 [ -n "${GERRIT_CHECKS_REF_PREFIX}" ] || die "GERRIT_CHECKS_REF_PREFIX is missing"
 
 while [ -n "$1" ]; do
     case "$1" in
+        --project)
+            PROJECT="$2"
+            shift 2
+            ;;
         --change)
             CHANGE="$2"
             shift 2
@@ -39,6 +48,7 @@ while [ -n "$1" ]; do
     esac
 done
 
+[ -n "${PROJECT}" ] || die "Cannot parse project"
 [ -n "${CHANGE}" ] || die "Cannot parse change"
 [ -n "${REVISION}" ] || die "Cannot parse patchset"
 [ -n "${COMMIT}" ] || die "Cannot parse commit"
@@ -48,7 +58,8 @@ done
 CHANGE="$(echo "${CHANGE}" | sed 's/~/#/g')"
 
 REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${REVISION}"
-echo "git push --force '${GERRIT_CHECKS_MOCK_URL}' '${REF}'"
-git push --force "${GERRIT_CHECKS_MOCK_URL}" "${REF}" || die "Failed to push to ${GERRIT_CHECKS_MOCK_URL}"
+REPO="${GERRIT_CHECKS_MOCK_URL_PREFIX}/$(project_transform "${PROJECT}")"
+echo "checks-mock-hook: pushing '${REF}' into ${REPO}"
+git push --force "${REPO}" "${REF}" || die "Failed to push to ${REPO}"
 
 exit 0
