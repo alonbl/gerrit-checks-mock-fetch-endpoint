@@ -2,6 +2,7 @@
 # pylint: disable=duplicate-code
 import base64
 import configparser
+import re
 import typing
 import urllib.parse
 
@@ -93,7 +94,8 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
 
         self._base_url = config["base_url"]
         self._branch_prefix = config.get("branch_prefix", "changes/")
-        self._project_format = config.get("repo_format", "{repo}-ci")
+        self._repo_pattern = config.get("repo_pattern", "^(?P<repo>.*)$")
+        self._repo_replacement = config.get("repo_replacement", "\\g<repo>-ci")
 
         #
         # Must set authorization header explicitly
@@ -116,9 +118,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
     ) -> list[checks.CheckRun]:
         pipelines = self._json_fetcher(
             url=f"{self._base_url}/{{project}}/pipelines/?{{query}}".format(
-                project=self._project_format.format(
-                    repo=request["project"],
-                ),
+                repo=re.sub(self._repo_pattern, self._repo_replacement, request["project"]),
                 query=urllib.parse.urlencode(
                     {
                         "target.branch": "/".join(
