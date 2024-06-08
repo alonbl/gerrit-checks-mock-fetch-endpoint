@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 # Gerrit captures only stdout
 exec 2>&1
 
@@ -21,6 +22,8 @@ project_transform() {
 [ -n "${GERRIT_CHECKS_MOCK_URL_PREFIX}" ] || die "GERRIT_CHECKS_MOCK_URL_PREFIX is missing"
 [ -n "${GERRIT_CHECKS_REF_PREFIX}" ] || die "GERRIT_CHECKS_REF_PREFIX is missing"
 
+script="$(basename "$0")"
+
 while [ -n "$1" ]; do
     case "$1" in
         --project)
@@ -32,11 +35,15 @@ while [ -n "$1" ]; do
             shift 2
             ;;
         --patchset)
-            REVISION="$2"
+            PATCHSET="$2"
             shift 2
             ;;
         --commit)
             COMMIT="$2"
+            shift 2
+            ;;
+        --comment)
+            COMMENT="$2"
             shift 2
             ;;
         --*)
@@ -50,14 +57,31 @@ done
 
 [ -n "${PROJECT}" ] || die "Cannot parse project"
 [ -n "${CHANGE}" ] || die "Cannot parse change"
-[ -n "${REVISION}" ] || die "Cannot parse patchset"
+[ -n "${PATCHSET}" ] || die "Cannot parse patchset"
 [ -n "${COMMIT}" ] || die "Cannot parse commit"
+
+case "${script}" in
+    patchset-created)
+        ;;
+    comment-added)
+        [ -n "${COMMENT}" ] || die "Cannot parse comment"
+        ;;
+    *)
+        die "Unsupported ${script} hook"
+        ;;
+esac
+
+if [ "${script}" = "comment-added" ]; then
+    if ! echo "${COMMENT}" | grep -q "#ci-repush"; then
+        exit 0
+    fi
+fi
 
 # Gerrit uses '~' as separator which is illegal in refspec
 # As it URL encode the parts, we can use '#' as replacement
 CHANGE="$(echo "${CHANGE}" | sed 's/~/#/g')"
 
-REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${REVISION}"
+REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${PATCHSET}"
 REPO="${GERRIT_CHECKS_MOCK_URL_PREFIX}/$(project_transform "${PROJECT}")"
 echo "checks-mock-hook: pushing '${REF}' into ${REPO}"
 git push --force "${REPO}" "${REF}" || die "Failed to push to ${REPO}"

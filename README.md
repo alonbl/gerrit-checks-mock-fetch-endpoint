@@ -61,8 +61,11 @@ project_transform() {
 
 ```sh
 ln -s \
-    /usr/libexec/gerrit-checks-mock-fetch-endpoint/patchset-created \
+    /usr/libexec/gerrit-checks-mock-fetch-endpoint/fetch-mock-hook \
     @GERRIT_SITE@/hooks/patchset-created
+ln -s \
+    /usr/libexec/gerrit-checks-mock-fetch-endpoint/fetch-mock-hook \
+    @GERRIT_SITE@/hooks/comment-added
 ```
 
 ## Configuration File
