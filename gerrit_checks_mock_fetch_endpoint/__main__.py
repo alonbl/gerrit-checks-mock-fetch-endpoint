@@ -4,7 +4,6 @@ import configparser
 import functools
 import http.server
 import importlib.metadata
-import io
 import json
 import logging
 import pathlib
@@ -105,14 +104,8 @@ class MyServer(http.server.BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json; charset=UTF-8")
                 self.end_headers()
                 self.send_response(200)
-                response_wrapper = io.TextIOWrapper(self.wfile, write_through=True)
 
-                #
-                # Avoid double close
-                #
-                setattr(response_wrapper, "close", lambda: None)
-
-                json.dump(response, response_wrapper)
+                self.wfile.write(json.dumps(response).encode("UTF-8"))
 
                 self._logger.debug("response %s", response)
             else:
@@ -204,7 +197,7 @@ def _setup_log(
     logging.getLogger(None).addHandler(handler)
 
     logger = logging.getLogger("gerrit_checks_mock_fetch_endpoint")
-    logger.setLevel(LOG_LEVELS.get(args.log_level or config.get("log_level"), logging.INFO))
+    logger.setLevel(LOG_LEVELS.get(args.log_level, config.get("log_level", logging.INFO)))
 
 
 def main() -> None:
