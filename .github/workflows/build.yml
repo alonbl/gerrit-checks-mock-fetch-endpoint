@@ -5,13 +5,13 @@ on:
   - pull_request
 
 env:
-  BUILD_PYTHON_FOR_BUILD: "3.10"
-  BUILD_PYTHON_FOR_BUILD_ALIAS: "py310"
+  BUILD_PYTHON_FOR_BUILD: "3.12"
+  BUILD_PYTHON_FOR_BUILD_ALIAS: "py312"
 
 jobs:
   dist:
     name: dist
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: checkout
@@ -36,7 +36,7 @@ jobs:
 
   style:
     name: style
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: checkout
@@ -55,11 +55,11 @@ jobs:
 
   build:
     name: ${{ matrix.python-version }}-build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version:
-          - "3.10"
+          - "3.12"
 
     steps:
       - name: checkout

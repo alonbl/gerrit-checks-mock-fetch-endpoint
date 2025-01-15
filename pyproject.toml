@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gerrit-checks-mock-fetch-endpoint"
 readme = "README.md"
-version = "0.0.0-b"
+version = "0.0.0"
 requires-python = ">=3.9"
 
 [project.license]
@@ -26,9 +26,8 @@ name = "Alon Bar-Lev"
 email = "alon.barlev@gmail.com"
 
 [tool.setuptools.packages.find]
-exclude = [
-    "build*",
-    "tests*",
+include = [
+    "gerrit_checks_mock_fetch_endpoint*",
 ]
 
 [tool.black]
