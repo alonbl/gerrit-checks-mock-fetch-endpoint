@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import argparse
 import configparser
 import functools
@@ -35,7 +34,7 @@ LOG_LEVELS: dict[str, int] = {
 SPLIT_COMMA_RE: typing.Final = re.compile(r"\s*,\s*")
 
 
-DRIVERS: typing.Final[dict[str, typing.Type[driver.DriverBase]]] = {
+DRIVERS: typing.Final[dict[str, type[driver.DriverBase]]] = {
     "github": driver_github.Driver,
     "bitbucket": driver_bitbucket.Driver,
     "sandbox": driver_sandbox.Driver,
@@ -218,7 +217,7 @@ def main() -> None:
 
     logger.info("Startup, version=%s", distribution.version)
     logger.debug("Args: %r", args)
-    logger.debug("Config: %r", dict(((x, dict(y)) for x, y in config.items())))
+    logger.debug("Config: %r", {x: dict(y) for x, y in config.items()})
 
     driver_names = config["main"].get("drivers")
     if not driver_names:
@@ -226,7 +225,7 @@ def main() -> None:
 
     drivers: list[driver.DriverBase] = []
     for driver_name in SPLIT_COMMA_RE.split(driver_names.strip()):
-        driver_class: typing.Optional[typing.Type[driver.DriverBase]] = DRIVERS.get(
+        driver_class: type[driver.DriverBase] | None = DRIVERS.get(
             driver_name,
         )
         if not driver_class:

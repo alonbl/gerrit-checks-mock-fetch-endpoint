@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=duplicate-code
 import configparser
 import re
@@ -10,12 +9,12 @@ from . import checks, driver, fetch_endpoint
 
 class StatusInfo(typing.TypedDict):
     status: checks.RunStatus
-    tags: typing.Union[tuple[()], tuple[checks.Tag]]
+    tags: tuple[()] | tuple[checks.Tag]
 
 
 class ConclusionInfo(typing.TypedDict):
     category: checks.Category
-    tags: typing.Union[tuple[()], tuple[checks.Tag]]
+    tags: tuple[()] | tuple[checks.Tag]
 
 
 class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods

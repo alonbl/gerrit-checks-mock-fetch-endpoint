@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 # flake8: noqa
 # mypy: ignore-errors
 # pylint: disable=unused-import, invalid-name, unused-argument, too-few-public-methods
 
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable, List, Optional, TypedDict, Union
+from typing import List, Optional, TypedDict, Union
 
 ##### BEGIN OF LSP SPECS
 
@@ -33,7 +33,7 @@ class ChangeData(TypedDict):
     patchsetNumber: float
     patchsetSha: str
     repo: str
-    commitMessage: Optional[str]
+    commitMessage: str | None
     changeInfo: "ChangeInfo"
 
 
@@ -44,12 +44,12 @@ class ChecksProvider:
 
 class FetchResponse(TypedDict):
     responseCode: "ResponseCode"
-    errorMessage: Optional[str]
-    loginCallback: Optional[Callable[[], None]]
-    actions: Optional[List["Action"]]
-    summaryMessage: Optional[str]
-    links: Optional[List["Link"]]
-    runs: Optional[List["CheckRun"]]
+    errorMessage: str | None
+    loginCallback: Callable[[], None] | None
+    actions: list["Action"] | None
+    summaryMessage: str | None
+    links: list["Link"] | None
+    runs: list["CheckRun"] | None
 
 
 class ResponseCode(str, Enum):
@@ -59,30 +59,30 @@ class ResponseCode(str, Enum):
 
 
 class CheckRun(TypedDict):
-    change: Optional[float]
-    patchset: Optional[float]
-    attempt: Optional[float]
-    externalId: Optional[str]
+    change: float | None
+    patchset: float | None
+    attempt: float | None
+    externalId: str | None
     checkName: str
-    checkDescription: Optional[str]
-    checkLink: Optional[str]
+    checkDescription: str | None
+    checkLink: str | None
     status: "RunStatus"
-    statusDescription: Optional[str]
-    statusLink: Optional[str]
-    labelName: Optional[str]
-    actions: Optional[List["Action"]]
+    statusDescription: str | None
+    statusLink: str | None
+    labelName: str | None
+    actions: list["Action"] | None
     scheduledTimestamp: Optional["Date"]
     startedTimestamp: Optional["Date"]
     finishedTimestamp: Optional["Date"]
-    results: Optional[List["CheckResult"]]
+    results: list["CheckResult"] | None
 
 
 class Action(TypedDict):
     name: str
-    tooltip: Optional[str]
-    primary: Optional[bool]
-    summary: Optional[bool]
-    disabled: Optional[bool]
+    tooltip: str | None
+    primary: bool | None
+    summary: bool | None
+    disabled: bool | None
     callback: "ActionCallback"
 
 
@@ -93,9 +93,9 @@ ActionCallback = Callable[
 
 
 class ActionResult(TypedDict):
-    message: Optional[str]
-    shouldReload: Optional[bool]
-    errorMessage: Optional[str]
+    message: str | None
+    shouldReload: bool | None
+    errorMessage: str | None
 
 
 class RunStatus(str, Enum):
@@ -106,14 +106,14 @@ class RunStatus(str, Enum):
 
 
 class CheckResult(TypedDict):
-    externalId: Optional[str]
+    externalId: str | None
     category: "Category"
     summary: str
-    message: Optional[str]
-    tags: Optional[List["Tag"]]
-    links: Optional[List["Link"]]
-    codePointers: Optional[List["CodePointer"]]
-    actions: Optional[List[Action]]
+    message: str | None
+    tags: list["Tag"] | None
+    links: list["Link"] | None
+    codePointers: list["CodePointer"] | None
+    actions: list[Action] | None
 
 
 class Category(str, Enum):
@@ -125,7 +125,7 @@ class Category(str, Enum):
 
 class Tag(TypedDict):
     name: str
-    tooltip: Optional[str]
+    tooltip: str | None
     color: Optional["TagColor"]
 
 
@@ -140,7 +140,7 @@ class TagColor(str, Enum):
 
 class Link(TypedDict):
     url: str
-    tooltip: Optional[str]
+    tooltip: str | None
     primary: bool
     icon: "LinkIcon"
 

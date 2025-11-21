@@ -21,6 +21,7 @@ jobs:
       - name: dependencies
         working-directory: work
         run: |
+          sudo apt update
           sudo apt install -y build-essential devscripts equivs
           sudo sudo mk-build-deps -i --tool="apt-get -y -o Debug::pkgProblemResolver=yes --no-install-recommends"
       - name: package

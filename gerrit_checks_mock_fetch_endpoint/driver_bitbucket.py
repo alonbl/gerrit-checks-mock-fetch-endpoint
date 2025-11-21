@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=duplicate-code
 import base64
 import configparser
@@ -11,12 +10,12 @@ from . import checks, driver, fetch_endpoint
 
 class StatusInfo(typing.TypedDict):
     status: checks.RunStatus
-    tags: typing.Union[tuple[()], tuple[checks.Tag]]
+    tags: tuple[()] | tuple[checks.Tag]
 
 
 class ConclusionInfo(typing.TypedDict):
     category: checks.Category
-    tags: typing.Union[tuple[()], tuple[checks.Tag]]
+    tags: tuple[()] | tuple[checks.Tag]
 
 
 class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
@@ -106,9 +105,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
             "Accept": "application/json",
             "Authorization": "Basic "
             + base64.b64encode(
-                f"{config['user']}:{config['password']}".encode(
-                    "utf8",
-                ),
+                f"{config['user']}:{config['password']}".encode(),
             ).decode("utf8"),
         }
 

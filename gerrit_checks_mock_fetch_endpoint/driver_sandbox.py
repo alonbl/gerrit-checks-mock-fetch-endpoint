@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from . import checks, driver, fetch_endpoint
 
 

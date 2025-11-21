@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abc
 import configparser
 import json
@@ -11,7 +10,7 @@ from . import checks, fetch_endpoint
 T = typing.TypeVar("T")
 
 
-def non_none(var: typing.Optional[T]) -> T:
+def non_none(var: T | None) -> T:
     if var is None:
         raise RuntimeError("Unexpected None")
     return var
@@ -38,7 +37,7 @@ class DriverBase(abc.ABC):  # pylint: disable=too-few-public-methods
     def __repr__(self) -> str:
         return self._name
 
-    def _json_fetcher(self, url: str, headers: dict[str, str]) -> typing.Optional[typing.Any]:
+    def _json_fetcher(self, url: str, headers: dict[str, str]) -> typing.Any | None:
         try:
             self._logger.debug("fetch url=%s timeout=%s", url, self._timeout)
             with self._opener.open(
