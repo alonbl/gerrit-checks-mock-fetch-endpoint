@@ -38,6 +38,7 @@ class DriverBase(abc.ABC):  # pylint: disable=too-many-instance-attributes
         self._base_url = config["base_url"]
         self._repo_pattern = config.get("repo_pattern", "^(?P<repo>.*)$")
         self._repo_replacement = config.get("repo_replacement", "\\g<repo>-ci")
+        self._remote_name_style = config.get("remote_name_style", "asis")
 
     def __repr__(self) -> str:
         return self._name
@@ -61,7 +62,10 @@ class DriverBase(abc.ABC):  # pylint: disable=too-many-instance-attributes
         self,
         request: fetch_endpoint.FetchEndpoint,
     ) -> str:
-        return re.sub(self._repo_pattern, self._repo_replacement, request["project"])
+        repo = request["project"]
+        if self._remote_name_style == "underscore":
+            repo = repo.replace("/", "_")
+        return re.sub(self._repo_pattern, self._repo_replacement, repo)
 
     @abc.abstractmethod
     def run(

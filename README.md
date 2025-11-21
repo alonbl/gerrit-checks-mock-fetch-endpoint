@@ -101,6 +101,7 @@ base_url = https://api.github.com/repos/@SPACE@
 branch_prefix = @GERRIT_ID@
 repo_pattern = ^(?P<repo>.*)$
 repo_replacement = \g<repo>-ci
+remote_name_style = asis|underscore
 timeout = 2
 token = @APP_TOKEN@
 ```
@@ -120,6 +121,7 @@ base_url = https://api.bitbucket.org/2.0/repositories/@WORKSPACE@
 branch_prefix = @GERRIT_ID@/changes/
 repo_pattern = ^(?P<repo>.*)$
 repo_replacement = \g<repo>-ci
+remote_name_style = asis|underscore
 timeout = 2
 user = @USER@
 password = @APP PASSWORD@
