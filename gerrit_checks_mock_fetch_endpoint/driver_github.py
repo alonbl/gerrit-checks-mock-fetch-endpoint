@@ -1,6 +1,5 @@
 # pylint: disable=duplicate-code
 import configparser
-import re
 import typing
 import urllib.parse
 
@@ -113,10 +112,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
     def __init__(self, name: str, config: configparser.SectionProxy):
         super().__init__(name, config)
 
-        self._base_url = config["base_url"]
         self._branch_prefix = config.get("branch_prefix", "gerrit")
-        self._repo_pattern = config.get("repo_pattern", "^(?P<repo>.*)$")
-        self._repo_replacement = config.get("repo_replacement", "\\g<repo>-ci")
 
         #
         # Must set authorization header explicitly
@@ -134,7 +130,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
     ) -> list[checks.CheckRun]:
         workflow_runs = self._json_fetcher(
             url=f"{self._base_url}/{{repo}}/actions/runs?{{query}}".format(
-                repo=re.sub(self._repo_pattern, self._repo_replacement, request["project"]),
+                repo=self._repo_name(request),
                 query=urllib.parse.urlencode(
                     {
                         "branch": "/".join(

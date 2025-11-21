@@ -2,6 +2,7 @@ import abc
 import configparser
 import json
 import logging
+import re
 import typing
 import urllib.request
 
@@ -16,7 +17,7 @@ def non_none(var: T | None) -> T:
     return var
 
 
-class DriverBase(abc.ABC):  # pylint: disable=too-few-public-methods
+class DriverBase(abc.ABC):  # pylint: disable=too-many-instance-attributes
 
     _logger: logging.Logger
     _config: configparser.SectionProxy
@@ -33,6 +34,10 @@ class DriverBase(abc.ABC):  # pylint: disable=too-few-public-methods
                 debuglevel=1 if self._logger.isEnabledFor(logging.DEBUG) else 0,
             ),
         )
+
+        self._base_url = config["base_url"]
+        self._repo_pattern = config.get("repo_pattern", "^(?P<repo>.*)$")
+        self._repo_replacement = config.get("repo_replacement", "\\g<repo>-ci")
 
     def __repr__(self) -> str:
         return self._name
@@ -51,6 +56,12 @@ class DriverBase(abc.ABC):  # pylint: disable=too-few-public-methods
             self._logger.error("Cannot communicate with '%s': %s", self._name, e)
             self._logger.debug("Exception", exc_info=True)
             return None
+
+    def _repo_name(
+        self,
+        request: fetch_endpoint.FetchEndpoint,
+    ) -> str:
+        return re.sub(self._repo_pattern, self._repo_replacement, request["project"])
 
     @abc.abstractmethod
     def run(
