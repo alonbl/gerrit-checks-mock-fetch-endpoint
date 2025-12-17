@@ -187,5 +187,6 @@ sed -e 's/(Enum)/(str, Enum)/' checks-in.py > checks.py
 ### Debug
 
 ```
-$ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/fetch -d '{"project": "test1", "changeId": "test1~master~I324324324", "revision": 9}'
+$ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8080/fetch \
+    -d '{"project": "test1", "changeId": "test1~master~I324324324", "changeId": "abd64829d6da2dc03b257510afcaf55dbcf8b80b", "revision": 9}'
 ```

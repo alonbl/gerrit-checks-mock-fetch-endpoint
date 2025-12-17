@@ -34,10 +34,6 @@ while [ -n "$1" ]; do
             CHANGE="$2"
             shift 2
             ;;
-        --patchset)
-            PATCHSET="$2"
-            shift 2
-            ;;
         --commit)
             COMMIT="$2"
             shift 2
@@ -57,7 +53,6 @@ done
 
 [ -n "${PROJECT}" ] || die "Cannot parse project"
 [ -n "${CHANGE}" ] || die "Cannot parse change"
-[ -n "${PATCHSET}" ] || die "Cannot parse patchset"
 [ -n "${COMMIT}" ] || die "Cannot parse commit"
 
 case "${script}" in
@@ -81,7 +76,7 @@ fi
 # As it URL encode the parts, we can use '#' as replacement
 CHANGE="$(echo "${CHANGE}" | sed 's/~/#/g')"
 
-REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${PATCHSET}"
+REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${COMMIT}"
 REPO="${GERRIT_CHECKS_MOCK_URL_PREFIX}/$(project_transform "${PROJECT}")"
 echo "checks-mock-hook: pushing '${REF}' into ${REPO}"
 git push --force "${REPO}" "${REF}" || die "Failed to push to ${REPO}"

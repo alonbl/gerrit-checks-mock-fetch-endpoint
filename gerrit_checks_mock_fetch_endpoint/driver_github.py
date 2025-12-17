@@ -137,7 +137,7 @@ class Driver(driver.DriverBase):  # pylint: disable=too-few-public-methods
                             (
                                 self._branch_prefix,
                                 request["changeId"].replace("~", "#"),
-                                str(request["revision"]),
+                                str(request["commitId"]),
                             ),
                         ),
                     },
