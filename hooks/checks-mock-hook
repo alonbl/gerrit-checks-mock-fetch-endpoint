@@ -81,7 +81,7 @@ fi
 # As it URL encode the parts, we can use '#' as replacement
 CHANGE="$(echo "${CHANGE}" | sed 's/~/#/g')"
 
-REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${PATCHSET}"
+REF="${COMMIT}:refs/heads/${GERRIT_CHECKS_REF_PREFIX}/${CHANGE}/${COMMIT}"
 REPO="${GERRIT_CHECKS_MOCK_URL_PREFIX}/$(project_transform "${PROJECT}")"
 echo "checks-mock-hook: pushing '${REF}' into ${REPO}"
 git push --force "${REPO}" "${REF}" || die "Failed to push to ${REPO}"
